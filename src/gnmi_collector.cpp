@@ -145,7 +145,15 @@ void StatConnector::FillCounters(RepeatedPtrField<Update> *list, string metric)
           break;
         }
       case STAT_DIR_TYPE_ERROR_INDEX:
-        addIntCounter(list, r[i].name, r[i].error_value);
+        {
+          int k=0;
+          for (; k < stat_segment_vec_len(r[i].error_vector); k++)
+            {
+              string path (r[i].name);
+              path += '/' + VapiConnector::ifMap[k];
+              addIntCounter(list, path, r[i].error_vector[k]);
+            }
+        }
         break;
       case STAT_DIR_TYPE_SCALAR_INDEX:
         addIntCounter(list, r[i].name, r[i].scalar_value);
